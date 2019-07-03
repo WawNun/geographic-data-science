@@ -6,32 +6,17 @@ jupyter:
       extension: .md
       format_name: markdown
       format_version: '1.1'
-      jupytext_version: 1.1.6
+      jupytext_version: 1.1.7
   kernelspec:
     display_name: Python 3
     language: python
     name: python3
 ---
 
-```python
 # Choropleth mapping
 
 
 
-```
-
-```python
-%matplotlib inline
-
-import seaborn
-import pandas
-import geopandas
-import pysal
-import numpy
-from booktools import choropleth
-from pysal.viz.mapclassify import classifiers as mapclassify
-import matplotlib.pyplot as plt
-```
 
 <!-- #region -->
 ## Principles
@@ -71,6 +56,19 @@ theory and practice by exploring how these concepts are implemented in different
 
 
 <!-- #endregion -->
+
+```python
+%matplotlib inline
+
+import seaborn
+import pandas
+import geopandas
+import pysal
+import numpy
+from booktools import choropleth
+import mapclassify
+import matplotlib.pyplot as plt
+```
 
 ## Quantitative data classification 
 
@@ -492,12 +490,44 @@ maps using PySAL and the helper method `choropleth`:
 choropleth(mx, 'PCGDP1940', cmap='BuGn')
 ```
 
-The default uses a quantile classification with k=5, together with a green color
-pallete where darker hues indicate higher class assignment for the attribute
-values associated with each polygon.
+```python
+PCGDP1940 = mx.PCGDP1940
+q5 = mapclassify.Quantiles(PCGDP1940)
+q5
+```
 
-These defaults can be overriden in a
-number of ways, for example changing the colormap and number of quantiles:
+The resulting classifier object has a plot method takes a geopandas dataframe as an argument:
+
+```python
+q5.plot(mx)
+```
+
+The default uses a `YlGnBu` color map from matplotlib. We can override the color map, as well as drop the axes, as follows:
+
+
+```python
+_ = q5.plot(mx, cmap='Blues', axis_on=False, legend=True,
+           legend_kwds={'loc': 'upper right'}, legend_decimal=1)
+```
+
+```python
+_ = q5.plot(mx, cmap='Blues', axis_on=False, legend=True,
+           legend_kwds={'loc': 'upper right'}, legend_decimal=1)
+```
+
+```python
+_ = q5.plot(mx, cmap='Blues', axis_on=False, legend=True,
+           legend_kwds={'loc': 'upper right'}, legend_labels = list(range(5)))
+```
+
+```python
+_ = q5.plot(mx, cmap='Blues', axis_on=False, legend=True,
+           legend_kwds={'loc': 'upper right'}, legend_decimal=0)
+```
+
+```python
+_ = q5.plot(mx, cmap='Blues', axis_on=False)
+```
 
 ```python
 choropleth(mx, 'PCGDP1940', cmap='Blues', k=4)
@@ -517,6 +547,17 @@ each of the k=5 classifiers:
 - Fisher Jenks
 
 **DA-B NOTE**: it would *really* nice to have a `mapclassify.plot` method to go from created classifications to choropleths in this context.
+
+```python
+ea5 = mapclassify.EqualInterval(PCGDP1940, k=5)
+ea5
+```
+
+```python
+_ = ea5.plot(mx, cmap='Blues', axis_on=False, legend=True,
+           legend_kwds={'loc': 'upper right'}, legend_decimal=1,
+            border_color='gray')
+```
 
 ```python
 choropleth(mx, 'PCGDP1940', cmap='Blues',
@@ -608,24 +649,33 @@ mx['HANSON98'].head()
 
 This regionalization scheme partions Mexico into 5 regions. A naive (and
 incorrect) way to display this would be to treat the region variable as
-sequential and use equal_inteval $k=5$ to display the regions:
+sequential and use a `UserDefined` classifier to display the regions:
 
 ```python
-choropleth(mx, 'HANSON98', cmap='Blues', scheme='equal_interval')
+import numpy as np
+h5 = mapclassify.UserDefined(mx['HANSON98'], bins=np.arange(1,6).tolist())
+h5
+```
+
+```python
+_ = h5.plot(mx, cmap='Blues', axis_on=False, legend=True,
+           legend_kwds={'loc': 'upper right'}, legend_decimal=0,
+            border_color='gray')
 ```
 
 This is not correct because the region variable is not on an interval scale, so
 the differences between the values have no quantitative significance but rather
 the values simply indicate region membership. However, the choropleth above gives
-a clear visual cue that regions in the south are more (of whichever is being plot)
+a clear visual cue that regions in the south have larger values
 than those in the north, as the color map implies an intensity gradient.
 
 A more appropriate visualization
 is to use a "qualitative" color palette:
 
 ```python
-choropleth(mx, 'HANSON98', cmap='Pastel1',
-           scheme='equal_interval')
+_ = h5.plot(mx, cmap='Pastel1', axis_on=False, legend=True,
+           legend_kwds={'loc': 'upper right'}, legend_decimal=0,
+            border_color='gray')
 ```
 
 ## Conclusion
