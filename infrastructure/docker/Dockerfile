@@ -8,6 +8,8 @@ RUN pip install -U --no-deps \
                     git+https://github.com/jupyter/jupyter-book \
                     nbclean \
                     nbgrader \
+                    libsass \
+                    jupytext \
                     pytest \
                     ruamel.yaml
 RUN jupyter-book create testbook --demo
