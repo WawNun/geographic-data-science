@@ -1043,7 +1043,7 @@ These are the starkest contrasts in the map, and result in the most distinctive 
 Spatial weights are central to how we *represent* spatial relationships in mathematical and computational environments. At their core, they are a "geo-graph," or a network defined by the geographcial relationships between observations. They form kind of a "spatial index," in that they record which observations have a specific geographcial relatinoship. Since spatial weights are fundamental to how "proximity" is represented in geographic data science, we will use them again and again throughout the book. 
 
 
-## Questions
+# Questions
 
 
 1. Rook contiguity & Queen contiguity are two of three kinds of contiguity that are defined in terms of chess analogies. The third kind, *Bishop contiguity*, applies when two observations are considered connected when they share single vertices, but are considered *disconnected* if they share an edge. This means that observations that exhibit Queen contiguity are those that exhibit either Rook or Bishop contiguity. Using the Rook and Queen contiguity matrices we built for San Diego and the `Wsets.w_difference` function, are there any Bishop-contiguous observations in San Diego? 
